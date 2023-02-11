@@ -6,17 +6,10 @@ OS and architecture, with a simple command.
 
 ## Repository Setup
 
-To use this program, your github releases should be named
-`reponame-<OS>-<ARCH>.tar.gz` under your releases directory.  Note that OS and
-ARCH are your OS name and Architecture name, respectively. This program uses
-the Go standard names for OS and architecture (look at the source and it should
-become very clear). For an example of how things should look, see this release
-for another of my projects, [https://github.com/marcopaganini/termotp/releases/tag/v0.0.4].
+To use this program, your github releases should be named `reponame-<OS>-<ARCH>.tar.gz` under your releases directory.  Note that OS and
+ARCH are your OS name and Architecture name, respectively. This program uses the Go standard names for OS and architecture (look at the source and it should become very clear). For an example of how things should look, see this [release page](https://github.com/marcopaganini/termotp/releases/tag/v0.0.4) for another of my projects. 
 
-Your distribution files must go in a directory named `<OS>-<ARCH>` inside the
-tarfile. This directory must contains, beside all files necessary to run your
-program, a shell script called `install.sh` that makes sure your program is
-properly installed in `/usr/local/bin` for example.
+Your distribution files must go in a directory named `<OS>-<ARCH>` inside the tarfile. This directory must contains, beside all files necessary to run your program, a shell script called `install.sh` that makes sure your program is properly installed in `/usr/local/bin` for example.
 
 You can see examples of this in action in another of my repositories: [termotp](https://github.com/marcopaganini/termotp).
 
@@ -44,16 +37,12 @@ The commands above can be copied into a single line, naturally.
 
 ## Restrictions
 
-Many. This is simple program in shell that I moved to this repo, since I kept different versions
-of it inside my personal projects. Some notables issues.
+Many. This is simple program in shell that I moved to this repo, since I kept different versions of it inside my personal projects. Some notables issues.
 
 - The program requires your release tarballs to have the same name as your repository.
 - The program uses Go's OS and Architecture names (see Appendix for an example).
-- The shell does some very basic heuristics to translate the output of `uname -m` and
-  `uname -o` to Go's OS and architecture names. Feel free to email me if you find errors there.
-- There's no provision to uninstall things. An easy way would be to include an "uninstall"
-  program with your distribution, like "uninstall-yourrepo.sh" that would be copied
-  to `/usr/local/bin` (by default) during installation.
+- The shell does some very basic heuristics to translate the output of `uname -m` and `uname -o` to Go's OS and architecture names. Feel free to email me if you find errors there.
+- There's no provision to uninstall things. An easy way would be to include an "uninstall" program with your distribution, like "uninstall-yourrepo.sh" that would be copied to `/usr/local/bin` (by default) during installation.
 
 ## Appendix
 
