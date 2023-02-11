@@ -7,7 +7,7 @@ OS and architecture, with a simple command.
 ## Repository Setup
 
 To use this program, your github releases should be named `reponame-<OS>-<ARCH>.tar.gz` under your releases directory.  Note that OS and
-ARCH are your OS name and Architecture name, respectively. This program uses the Go standard names for OS and architecture (look at the source and it should become very clear). For an example of how things should look, see this [release page](https://github.com/marcopaganini/termotp/releases/tag/v0.0.4) for another of my projects. 
+ARCH are your OS name and Architecture name, respectively. This program uses the Go standard names for OS and architecture (look at the source and it should become very clear). For an example of how things should look, see this [release page](https://github.com/marcopaganini/termotp/releases/tag/v0.0.4) for another of my projects.
 
 Your distribution files must go in a directory named `<OS>-<ARCH>` inside the tarfile. This directory must contains, beside all files necessary to run your program, a shell script called `install.sh` that makes sure your program is properly installed in `/usr/local/bin` for example.
 
@@ -21,7 +21,7 @@ wget:
 
 ```
 wget -q -O/tmp/install \
-  'https://raw.githubusercontent.com/YOUR-USER/YOUR-REPO/master/install.sh' && \
+  'https://raw.githubusercontent.com/marcopaganini/installer/master/install.sh' && \
   sudo sh /tmp/install YOUR-USER/YOUR-REPO
 ```
 
@@ -29,11 +29,11 @@ curl:
 
 ```
 curl -s \
-  'https://raw.githubusercontent.com/YOUR-USER/YOUR-REPO/master/install.sh' >/tmp/install && \
+  'https://raw.githubusercontent.com/marcopaganini/installer/master/install.sh' >/tmp/install && \
   sudo sh /tmp/install YOUR-USER/YOUR-REPO
 ```
 
-The commands above can be copied into a single line, naturally.
+Replace *YOUR-USER* and *YOUR-REPO* with your github username and repository.
 
 ## Restrictions
 
