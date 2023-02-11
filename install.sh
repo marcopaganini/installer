@@ -1,0 +1,111 @@
+#!/bin/sh
+
+set -eu
+
+readonly PROGRAM="${0##*/}"
+readonly OK="✅"
+readonly ERR="❌"
+
+# go_arch retrieves the go equivalent architecture for this machine.
+go_arch() {
+  arch="$(uname -m)"
+  case "${arch}" in
+    aarch64_be|aarch64|armv8b|armv8l)
+      echo "arm64" ;;
+    arm)
+      echo "arm" ;;
+    i386|i686)
+      echo "386" ;;
+    mips)
+      echo "mips" ;;
+    mips64)
+      echo "mips64" ;;
+    s390|s390x)
+      echo "s390x" ;;
+    x86_64)
+      echo "amd64" ;;
+  esac
+}
+
+# os_name returns the os_name.
+os_name() {
+  os="$(uname -o)"
+  # Only linux supported for now.
+  case "${os}" in
+    "GNU/Linux")
+      echo "linux" ;;
+  esac
+}
+
+# tmpname returns a temporary directory name. This is a crude workaround for
+# systems that don't have mktemp and rudimentary date commands.
+tempname() {
+  echo "/tmp/${PROGRAM}-$$"
+}
+
+die() {
+  echo >&2 "${ERR} ${*}"
+  exit 1
+}
+
+main() {
+  uid="$(id -u)"
+  if [ "${uid}" -ne 0 ]; then
+    die "Please run this program as root (using sudo)"
+  fi
+
+  if [ $# -ne 1 ]; then
+    die "Please specify github username/repo."
+  fi
+
+  readonly repo="${1}"
+  readonly release_name="${repo##*/}"
+  readonly releases_url="https://api.github.com/repos/${repo}/releases"
+
+  os="$(os_name)"
+  arch="$(go_arch)"
+
+  [ -z "${os}" ] && die "Unknown OS. Please send the result of 'uname -o' to the author."
+  [ -z "${arch}" ] && die "Unknown processor architecture. Please send the result of 'uname -m' to the author."
+
+  echo "${OK} Your OS is: ${os}"
+  echo "${OK} Your architecture is: ${arch}"
+
+  tgz="${release_name}-${os}-${arch}.tar.gz"
+
+  # Retrieve the list releases from github (this is hacky but we don't
+  # want to force people to have a proper JSON parser installed.)
+  latest="$(wget -q -O- "${releases_url}" | grep browser_download_url | grep -o "https://.*${tgz}" | sort -g | tail -1)"
+  [ -z "${latest}" ] && die "Unable to find any releases."
+  echo "${OK} Latest release: ${latest}"
+
+  # Download and install
+  tmp="$(tempname)"
+  out="${tmp}/${release_name}.tar.gz"
+
+  rm -rf "${tmp}"
+  mkdir -p "${tmp}"
+  echo "${OK} Downloading latest release."
+  if ! wget -q "${latest}" -O "${out}"; then
+    die "Error downloading: ${latest}"
+  fi
+
+  cwd="$(pwd)"
+  cd "${tmp}"
+  echo "${OK} Unpacking local installation file."
+  if ! gzip -d -c "${out}" | tar x; then
+    die "Error unpacking local release ($out)."
+  fi
+
+  cd "${tmp}/${os}-${arch}"
+  if [ ! -x "./install.sh" ]; then
+    die "Installation file is incomplete (missing install.sh). Please report to the author."
+  fi
+  ./install.sh || die "Installation failed."
+
+  cd "${cwd}"
+  rm -rf "${tmp}"
+  echo "${OK} Installation finished! Please make sure /usr/local/bin is in your PATH."
+}
+
+main "${@}"
