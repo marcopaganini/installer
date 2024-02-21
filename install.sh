@@ -34,6 +34,8 @@ os_name() {
   case "${os}" in
     "GNU/Linux")
       echo "linux" ;;
+    "Darwin")
+      echo "darwin" ;;
   esac
 }
 
@@ -65,7 +67,7 @@ main() {
   os="$(os_name)"
   arch="$(go_arch)"
 
-  [ -z "${os}" ] && die "Unknown OS. Please send the result of 'uname -o' to the author."
+  [ -z "${os}" ] && die "Unknown OS. Please send the result of 'uname -o' and 'uname -m' to the author."
   [ -z "${arch}" ] && die "Unknown processor architecture. Please send the result of 'uname -m' to the author."
 
   echo "${OK} Your OS is: ${os}"
