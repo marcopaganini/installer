@@ -10,7 +10,7 @@ readonly ERR="❌"
 go_arch() {
   arch="$(uname -m)"
   case "${arch}" in
-    aarch64_be|aarch64|armv8b|armv8l)
+    aarch64_be|aarch64|arm64|armv8b|armv8l)
       echo "arm64" ;;
     arm)
       echo "arm" ;;
