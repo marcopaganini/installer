@@ -1,7 +1,10 @@
 #!/bin/sh
+# See http://github.com/marcopaganini/installer for details on how to use this
+# script.
 
 set -eu
 
+readonly DEFAULT_INSTALL_DIR="/usr/local/bin"
 readonly PROGRAM="${0##*/}"
 readonly OK="✅"
 readonly ERR="❌"
@@ -51,13 +54,15 @@ die() {
 }
 
 main() {
-  uid="$(id -u)"
-  if [ "${uid}" -ne 0 ]; then
-    die "Please run this program as root (using sudo)"
+  # First argument = github username/repo.
+  if [ $# -lt 1 ]; then
+    die "Use: install.sh username/repo [destination_dir]"
   fi
 
-  if [ $# -ne 1 ]; then
-    die "Please specify github username/repo."
+  # Second argument (optional) installation directory.
+  install_dir="${DEFAULT_INSTALL_DIR}"
+  if [ $# -eq 2 ]; then
+    install_dir="${2}"
   fi
 
   readonly repo="${1}"
@@ -72,6 +77,7 @@ main() {
 
   echo "${OK} Your OS is: ${os}"
   echo "${OK} Your architecture is: ${arch}"
+  echo "${OK} Install directory: ${install_dir}"
 
   tgz="${release_name}-${os}-${arch}.tar.gz"
 
@@ -103,11 +109,11 @@ main() {
   if [ ! -x "./install.sh" ]; then
     die "Installation file is incomplete (missing install.sh). Please report to the author."
   fi
-  ./install.sh || die "Installation failed."
+  ./install.sh "${install_dir}" || die "Installation failed."
 
   cd "${cwd}"
   rm -rf "${tmp}"
-  echo "${OK} Installation finished! Please make sure /usr/local/bin is in your PATH."
+  echo "${OK} Installation finished! Please make sure ${install_dir} is in your PATH."
 }
 
 main "${@}"
